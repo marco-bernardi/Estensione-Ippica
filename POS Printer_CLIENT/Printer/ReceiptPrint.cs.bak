@@ -1,0 +1,92 @@
+﻿// Copyright © 2018 Dmitry Sikorsky. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System.Drawing;
+using System;
+using System.IO;
+
+namespace Printer
+{
+    public class ReceiptPrint : PrintBase
+    {
+        private string orderId;
+        private string quota;
+        private string importo;
+        private string vincita;
+        private string tipo;
+        private string data;
+        private string evento;
+        private string vincente;
+        
+        //private Order order;
+
+        // TODO: we don't need the orderId paramter, it is here just as an illustration
+        public void Print(string printerName, string stringFromWeb)
+        {
+            string[] splitted = stringFromWeb.Split('*');
+            this.orderId = splitted[0];
+            this.tipo = splitted[1];
+            this.data = splitted[2];
+            this.quota = splitted[3];
+            this.vincita = splitted[4];
+            this.importo = Convert.ToString(Convert.ToDouble(vincita) / Convert.ToDouble(quota));
+            this.evento = splitted[5].Replace("%20", " ");
+            Console.WriteLine(evento);
+            this.vincente = splitted[6].Replace("%20", " ");
+
+            this.Print(printerName, this.PrintCustomerFragment);
+        }
+
+        private void PrintCustomerFragment(Graphics g)
+        {
+            float y = 0;
+
+            using (Image logoImage = Image.FromFile(@"C:\\Users\\Marco\\Desktop\\PrintingFromWebToPOSPrinter-master (1)\\PrintingFromWebToPOSPrinter-master\\pizzarium_printable.png"))
+                g.DrawImage(logoImage, 0, 0, 40, 18);
+
+            y += 18; // Image logo height
+            y += 5; // Empty line
+            y += this.DrawTextColumns(
+              g, y,
+              new TextColumn($"ID Ticket:", 0.4f, fontSize: 14f),
+              new TextColumn(this.orderId, 0.6f, StringAlignment.Far, 14f)
+            );
+            y += 5; // Empty line
+            y += this.DrawTextColumns(
+              g, y,
+              new TextColumn($"Evento: {this.evento}", 1.0f)
+            );
+            y += 5; // Empty line
+            y += this.DrawTextColumns(
+              g, y,
+              new TextColumn($"Piazzato: {this.vincente}", 0.8f),
+              new TextColumn($"{this.quota}", 0.2f, StringAlignment.Far)
+            );
+            y += 5; // Empty line
+            y += this.DrawTextColumns(
+              g, y,
+              new TextColumn($"QUOTA TOTALE:", 0.8f),
+              new TextColumn(this.quota, 0.2f, StringAlignment.Far)
+            );
+
+            y += this.DrawTextColumns(
+              g, y,
+              new TextColumn($"IMPORTO:", 0.8f),
+              new TextColumn(this.importo + "€", 0.2f, StringAlignment.Far)
+            );
+
+            y += 5; // Empty line
+            y += this.DrawTextColumns(
+              g, y,
+              new TextColumn($"VINCITA POTENZIALE", 0.8f),
+              new TextColumn(this.vincita + "€", 0.2f, StringAlignment.Far)
+            );
+            y += 5; // Empty line
+            y += this.DrawTextColumns(
+              g, y,
+              new TextColumn($"Scadenza:", 0.4f),
+              new TextColumn(this.data, 0.6f, StringAlignment.Far)
+            );
+        }
+    }
+}

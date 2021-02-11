@@ -1,0 +1,33 @@
+  
+{
+    "name": "POS Printer",
+    "version": "1",
+    "description": "Print to Pos Printer",
+    "manifest_version": 2,
+    "browser_action": {
+    	"default_popup": "popup.html"
+    },
+    "permissions": [
+      "storage",
+      "tabs",
+      "https://*/*",
+      "http://*/*",
+      "activeTab"
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "https://*/*",
+          "http://*/*"
+        ],
+        "all_frames": true,
+        "run_at" : "document_end",
+        "js": [
+          "contUp.js"
+        ]
+      }
+    ],
+    "background": {
+      "scripts": ["background.js"]
+    }
+}
