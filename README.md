@@ -14,3 +14,7 @@ Chrome extension for priting on a POS printer a resume of the Hourse Racing tick
 - Add the extension to Chrome
 - Define the custom protocol print on Windows
 - Copy the client folder on C:
+
+## Credits
+
+<a href="https://github.com/DmitrySikorsky/PrintingFromWebToPOSPrinter"> PrintFromWeb </a> @Dmitry Sikorsky
